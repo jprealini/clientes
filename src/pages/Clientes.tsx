@@ -102,7 +102,7 @@ function Clientes() {
           <TextField label="Filtrar por ciudad" value={filtroCiudad} onChange={e => setFiltroCiudad(e.target.value)} size="small" fullWidth />
         </Stack>
         <TableContainer>
-          <Table size="small">
+          <Table size="medium">
             <TableHead>
               <TableRow>
                 <TableCell>Nombre</TableCell>

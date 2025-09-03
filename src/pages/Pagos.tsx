@@ -166,7 +166,7 @@ function Pagos() {
         <TextField label="Filtrar por monto" value={filtroMonto} onChange={e => setFiltroMonto(e.target.value)} size="small" fullWidth />
       </Stack>
       <TableContainer component={Paper} sx={{ mt: 2 }}>
-        <Table size="small">
+        <Table size="medium">
           <TableHead>
             <TableRow>
               <TableCell>Cliente</TableCell>

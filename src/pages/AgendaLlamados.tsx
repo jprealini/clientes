@@ -170,7 +170,7 @@ function AgendaLlamados() {
         </FormControl>
       </Stack>
       <TableContainer component={Paper} sx={{ mt: 2 }}>
-        <Table size="small">
+        <Table size="medium">
           <TableHead>
             <TableRow>
               <TableCell>Cliente</TableCell>
