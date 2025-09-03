@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Box, Typography, Button, TextField, Paper, Link as MuiLink } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import Clientes from './pages/Clientes';
@@ -50,6 +50,23 @@ function App() {
   const [error, setError] = useState('');
   const [isRegister, setIsRegister] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Verificar si hay una sesión activa al cargar la página
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Suscribirse a cambios en el estado de autenticación
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Limpiar la suscripción cuando el componente se desmonte
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
