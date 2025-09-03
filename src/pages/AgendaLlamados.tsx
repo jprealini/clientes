@@ -1,5 +1,29 @@
+
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Checkbox,
+  FormControlLabel,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Stack,
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function AgendaLlamados() {
   const [llamados, setLlamados] = useState<any[]>([]);
@@ -87,60 +111,128 @@ function AgendaLlamados() {
   });
 
   return (
-    <div>
-      <h2>Agenda de Llamados</h2>
-      <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
-        <select value={clienteId} onChange={e => setClienteId(e.target.value)} required>
-          <option value="">Seleccione cliente</option>
-          {clientes.map(c => (
-            <option key={c.id} value={c.id}>{c.nombre}</option>
-          ))}
-        </select>{' '}
-        <input type="datetime-local" value={fecha} onChange={e => setFecha(e.target.value)} required />{' '}
-        <input placeholder="Motivo" value={motivo} onChange={e => setMotivo(e.target.value)} />{' '}
-        <label>
-          <input type="checkbox" checked={realizado} onChange={e => setRealizado(e.target.checked)} /> Realizado
-        </label>{' '}
-        <button type="submit">{editId ? 'Guardar' : 'Agregar'}</button>
-        {editId && <button type="button" onClick={() => { setEditId(null); setClienteId(''); setFecha(''); setMotivo(''); setRealizado(false); }}>Cancelar</button>}
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <div style={{ marginBottom: 10 }}>
-        <input placeholder="Filtrar por cliente" value={filtroCliente} onChange={e => setFiltroCliente(e.target.value)} />{' '}
-        <input type="date" placeholder="Filtrar por fecha" value={filtroFecha} onChange={e => setFiltroFecha(e.target.value)} />{' '}
-        <input placeholder="Filtrar por motivo" value={filtroMotivo} onChange={e => setFiltroMotivo(e.target.value)} />{' '}
-        <select value={filtroRealizado} onChange={e => setFiltroRealizado(e.target.value)}>
-          <option value="">Todos</option>
-          <option value="sí">Realizados</option>
-          <option value="no">No realizados</option>
-        </select>
-      </div>
-      <table border={1} cellPadding={5} style={{ width: '100%', marginTop: 10 }}>
-        <thead>
-          <tr>
-            <th>Cliente</th>
-            <th>Fecha</th>
-            <th>Motivo</th>
-            <th>Realizado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {llamadosFiltrados.map(l => (
-            <tr key={l.id}>
-              <td>{l.clientes?.nombre || ''}</td>
-              <td>{l.fecha ? new Date(l.fecha).toLocaleString() : ''}</td>
-              <td>{l.motivo}</td>
-              <td>{l.realizado ? 'Sí' : 'No'}</td>
-              <td>
-                <button onClick={() => handleEdit(l)}>Editar</button>{' '}
-                <button onClick={() => handleDelete(l.id)}>Borrar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Box sx={{ maxWidth: 900, mx: 'auto', p: 2 }}>
+      <Typography variant="h4" mb={2} fontWeight={600}>Agenda de Llamados</Typography>
+      <Box component="form" onSubmit={handleSubmit} mb={3}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
+          <FormControl sx={{ minWidth: 180 }} size="small">
+            <InputLabel>Cliente</InputLabel>
+            <Select
+              value={clienteId}
+              label="Cliente"
+              onChange={e => setClienteId(e.target.value)}
+              required
+            >
+              <MenuItem value=""><em>Seleccione cliente</em></MenuItem>
+              {clientes.map(c => (
+                <MenuItem key={c.id} value={c.id}>{c.nombre}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            type="datetime-local"
+            label="Fecha"
+            value={fecha}
+            onChange={e => setFecha(e.target.value)}
+            size="small"
+            required
+            InputLabelProps={{ shrink: true }}
+            sx={{ minWidth: 180 }}
+          />
+          <TextField
+            label="Motivo"
+            value={motivo}
+            onChange={e => setMotivo(e.target.value)}
+            size="small"
+            sx={{ minWidth: 180 }}
+          />
+          <FormControlLabel
+            control={<Checkbox checked={realizado} onChange={e => setRealizado(e.target.checked)} />}
+            label="Realizado"
+          />
+          <Button type="submit" variant="contained" color="primary">
+            {editId ? 'Guardar' : 'Agregar'}
+          </Button>
+          {editId && (
+            <Button variant="outlined" color="secondary" onClick={() => {
+              setEditId(null);
+              setClienteId('');
+              setFecha('');
+              setMotivo('');
+              setRealizado(false);
+            }}>
+              Cancelar
+            </Button>
+          )}
+        </Stack>
+      </Box>
+      {error && <Typography color="error" mb={2}>{error}</Typography>}
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={2}>
+        <TextField
+          label="Filtrar por cliente"
+          value={filtroCliente}
+          onChange={e => setFiltroCliente(e.target.value)}
+          size="small"
+        />
+        <TextField
+          type="date"
+          label="Filtrar por fecha"
+          value={filtroFecha}
+          onChange={e => setFiltroFecha(e.target.value)}
+          size="small"
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          label="Filtrar por motivo"
+          value={filtroMotivo}
+          onChange={e => setFiltroMotivo(e.target.value)}
+          size="small"
+        />
+        <FormControl sx={{ minWidth: 120 }} size="small">
+          <InputLabel>Realizado</InputLabel>
+          <Select
+            value={filtroRealizado}
+            label="Realizado"
+            onChange={e => setFiltroRealizado(e.target.value)}
+          >
+            <MenuItem value="">Todos</MenuItem>
+            <MenuItem value="sí">Realizados</MenuItem>
+            <MenuItem value="no">No realizados</MenuItem>
+          </Select>
+        </FormControl>
+      </Stack>
+      <TableContainer component={Paper} sx={{ mt: 2 }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Cliente</TableCell>
+              <TableCell>Fecha</TableCell>
+              <TableCell>Motivo</TableCell>
+              <TableCell>Realizado</TableCell>
+              <TableCell align="center">Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {llamadosFiltrados.map(l => (
+              <TableRow key={l.id}>
+                <TableCell>{l.clientes?.nombre || ''}</TableCell>
+                <TableCell>{l.fecha ? new Date(l.fecha).toLocaleString() : ''}</TableCell>
+                <TableCell>{l.motivo}</TableCell>
+                <TableCell>{l.realizado ? 'Sí' : 'No'}</TableCell>
+                <TableCell align="center">
+                  <IconButton color="primary" onClick={() => handleEdit(l)} size="small">
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton color="error" onClick={() => handleDelete(l.id)} size="small">
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
 

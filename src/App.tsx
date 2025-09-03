@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { Container, Box, Typography, Button, TextField, Paper, Link as MuiLink } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Clientes from './pages/Clientes';
 import AgendaLlamados from './pages/AgendaLlamados';
@@ -70,38 +71,47 @@ function App() {
 
     return (
       <Router>
-        <div style={{ maxWidth: 600, margin: '40px auto', padding: 20 }}>
-          <h1>Administración de Clientes</h1>
+        <Container maxWidth="sm" sx={{ py: 4 }}>
+          <Typography variant="h4" align="center" fontWeight={700} mb={3}>
+            Administración de Clientes
+          </Typography>
           {!user ? (
-            <div style={{
-              background: '#f8f8fa',
-              borderRadius: 12,
-              boxShadow: '0 2px 8px #0001',
-              padding: 32,
-              maxWidth: 350,
-              margin: '40px auto',
-            }}>
-              <h2 style={{ textAlign: 'center', marginBottom: 24 }}>{isRegister ? 'Registro' : 'Iniciar sesión'}</h2>
-              <form onSubmit={isRegister ? handleRegister : handleLogin}>
-                <div style={{ marginBottom: 16 }}>
-                  <label style={{ display: 'block', marginBottom: 4 }}>Email</label>
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #ccc' }} />
-                </div>
-                <div style={{ marginBottom: 16 }}>
-                  <label style={{ display: 'block', marginBottom: 4 }}>Contraseña</label>
-                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 6, border: '1px solid #ccc' }} />
-                </div>
-                <button type="submit" style={{ width: '100%', padding: 10, borderRadius: 6, background: '#1976d2', color: '#fff', border: 'none', fontWeight: 'bold', fontSize: 16 }} disabled={loading}>
+            <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
+              <Typography variant="h6" align="center" mb={2}>
+                {isRegister ? 'Registro' : 'Iniciar sesión'}
+              </Typography>
+              <Box component="form" onSubmit={isRegister ? handleRegister : handleLogin} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <TextField
+                  label="Email"
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  fullWidth
+                />
+                <TextField
+                  label="Contraseña"
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  fullWidth
+                />
+                <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading} sx={{ py: 1.2, fontWeight: 700 }}>
                   {loading ? 'Procesando...' : isRegister ? 'Registrarse' : 'Ingresar'}
-                </button>
-              </form>
-              <div style={{ textAlign: 'center', marginTop: 16 }}>
-                <button type="button" style={{ background: 'none', border: 'none', color: '#1976d2', cursor: 'pointer', textDecoration: 'underline', fontSize: 14 }} onClick={() => { setIsRegister(!isRegister); setError(''); }}>
+                </Button>
+              </Box>
+              <Box textAlign="center" mt={2}>
+                <MuiLink component="button" type="button" underline="hover" color="primary" onClick={() => { setIsRegister(!isRegister); setError(''); }}>
                   {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
-                </button>
-              </div>
-              {error && <p style={{ color: error.includes('exitoso') ? 'green' : 'red', marginTop: 16 }}>{error}</p>}
-            </div>
+                </MuiLink>
+              </Box>
+              {error && (
+                <Typography color={error.includes('exitoso') ? 'success.main' : 'error'} align="center" mt={2}>
+                  {error}
+                </Typography>
+              )}
+            </Paper>
           ) : (
             <div>
               <p>Bienvenido, {user.email}</p>
@@ -126,7 +136,7 @@ function App() {
               </Routes>
             </div>
           )}
-        </div>
+  </Container>
       </Router>
     );
 }

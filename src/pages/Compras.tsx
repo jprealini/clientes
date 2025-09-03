@@ -1,5 +1,27 @@
+
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Stack,
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function Compras() {
   const [compras, setCompras] = useState<any[]>([]);
@@ -85,55 +107,125 @@ function Compras() {
   });
 
   return (
-    <div>
-      <h2>Registro de Compras</h2>
-      <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
-        <select value={clienteId} onChange={e => setClienteId(e.target.value)} required>
-          <option value="">Seleccione cliente</option>
-          {clientes.map(c => (
-            <option key={c.id} value={c.id}>{c.nombre}</option>
-          ))}
-        </select>{' '}
-        <input placeholder="Producto" value={producto} onChange={e => setProducto(e.target.value)} required />{' '}
-        <input type="number" min={1} placeholder="Cantidad" value={cantidad} onChange={e => setCantidad(Number(e.target.value))} required />{' '}
-        <input type="number" min={0} step={0.01} placeholder="Precio" value={precio} onChange={e => setPrecio(e.target.value)} required />{' '}
-        <button type="submit">{editId ? 'Guardar' : 'Agregar'}</button>
-        {editId && <button type="button" onClick={() => { setEditId(null); setClienteId(''); setProducto(''); setCantidad(1); setPrecio(''); }}>Cancelar</button>}
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <div style={{ marginBottom: 10 }}>
-        <input placeholder="Filtrar por cliente" value={filtroCliente} onChange={e => setFiltroCliente(e.target.value)} />{' '}
-        <input type="date" placeholder="Filtrar por fecha" value={filtroFecha} onChange={e => setFiltroFecha(e.target.value)} />{' '}
-        <input placeholder="Filtrar por producto" value={filtroProducto} onChange={e => setFiltroProducto(e.target.value)} />
-      </div>
-      <table border={1} cellPadding={5} style={{ width: '100%', marginTop: 10 }}>
-        <thead>
-          <tr>
-            <th>Cliente</th>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio</th>
-            <th>Fecha</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {comprasFiltradas.map(c => (
-            <tr key={c.id}>
-              <td>{c.clientes?.nombre || ''}</td>
-              <td>{c.producto}</td>
-              <td>{c.cantidad}</td>
-              <td>{c.precio}</td>
-              <td>{c.fecha ? new Date(c.fecha).toLocaleString() : ''}</td>
-              <td>
-                <button onClick={() => handleEdit(c)}>Editar</button>{' '}
-                <button onClick={() => handleDelete(c.id)}>Borrar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Box sx={{ maxWidth: 900, mx: 'auto', p: 2 }}>
+      <Typography variant="h4" mb={2} fontWeight={600}>Registro de Compras</Typography>
+      <Box component="form" onSubmit={handleSubmit} mb={3}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
+          <FormControl sx={{ minWidth: 180 }} size="small">
+            <InputLabel>Cliente</InputLabel>
+            <Select
+              value={clienteId}
+              label="Cliente"
+              onChange={e => setClienteId(e.target.value)}
+              required
+            >
+              <MenuItem value=""><em>Seleccione cliente</em></MenuItem>
+              {clientes.map(c => (
+                <MenuItem key={c.id} value={c.id}>{c.nombre}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            label="Producto"
+            value={producto}
+            onChange={e => setProducto(e.target.value)}
+            size="small"
+            required
+            sx={{ minWidth: 150 }}
+          />
+          <TextField
+            type="number"
+            label="Cantidad"
+            value={cantidad}
+            onChange={e => setCantidad(Number(e.target.value))}
+            size="small"
+            required
+            sx={{ minWidth: 100 }}
+            inputProps={{ min: 1 }}
+          />
+          <TextField
+            type="number"
+            label="Precio"
+            value={precio}
+            onChange={e => setPrecio(e.target.value)}
+            size="small"
+            required
+            sx={{ minWidth: 120 }}
+            inputProps={{ min: 0, step: 0.01 }}
+          />
+          <Button type="submit" variant="contained" color="primary">
+            {editId ? 'Guardar' : 'Agregar'}
+          </Button>
+          {editId && (
+            <Button variant="outlined" color="secondary" onClick={() => {
+              setEditId(null);
+              setClienteId('');
+              setProducto('');
+              setCantidad(1);
+              setPrecio('');
+            }}>
+              Cancelar
+            </Button>
+          )}
+        </Stack>
+      </Box>
+      {error && <Typography color="error" mb={2}>{error}</Typography>}
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={2}>
+        <TextField
+          label="Filtrar por cliente"
+          value={filtroCliente}
+          onChange={e => setFiltroCliente(e.target.value)}
+          size="small"
+        />
+        <TextField
+          type="date"
+          label="Filtrar por fecha"
+          value={filtroFecha}
+          onChange={e => setFiltroFecha(e.target.value)}
+          size="small"
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          label="Filtrar por producto"
+          value={filtroProducto}
+          onChange={e => setFiltroProducto(e.target.value)}
+          size="small"
+        />
+      </Stack>
+      <TableContainer component={Paper} sx={{ mt: 2 }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Cliente</TableCell>
+              <TableCell>Producto</TableCell>
+              <TableCell>Cantidad</TableCell>
+              <TableCell>Precio</TableCell>
+              <TableCell>Fecha</TableCell>
+              <TableCell align="center">Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {comprasFiltradas.map(c => (
+              <TableRow key={c.id}>
+                <TableCell>{c.clientes?.nombre || ''}</TableCell>
+                <TableCell>{c.producto}</TableCell>
+                <TableCell>{c.cantidad}</TableCell>
+                <TableCell>{c.precio}</TableCell>
+                <TableCell>{c.fecha ? new Date(c.fecha).toLocaleString() : ''}</TableCell>
+                <TableCell align="center">
+                  <IconButton color="primary" onClick={() => handleEdit(c)} size="small">
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton color="error" onClick={() => handleDelete(c.id)} size="small">
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
 

@@ -1,5 +1,27 @@
+
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Stack,
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function Pagos() {
   const [pagos, setPagos] = useState<any[]>([]);
@@ -83,62 +105,129 @@ function Pagos() {
   });
 
   return (
-    <div>
-      <h2>Registro de Pagos</h2>
-      <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
-        <select value={clienteId} onChange={e => setClienteId(e.target.value)} required>
-          <option value="">Seleccione cliente</option>
-          {clientes.map(c => (
-            <option key={c.id} value={c.id}>{c.nombre}</option>
-          ))}
-        </select>{' '}
-        <input type="number" min={0} step={0.01} placeholder="Monto" value={monto} onChange={e => setMonto(e.target.value)} required />{' '}
-        <select value={metodo} onChange={e => setMetodo(e.target.value)}>
-          <option value="Efectivo">Efectivo</option>
-          <option value="Transferencia">Transferencia</option>
-          <option value="Tarjeta">Tarjeta</option>
-        </select>{' '}
-        <button type="submit">{editId ? 'Guardar' : 'Agregar'}</button>
-        {editId && <button type="button" onClick={() => { setEditId(null); setClienteId(''); setMonto(''); setMetodo('Efectivo'); }}>Cancelar</button>}
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <div style={{ marginBottom: 10 }}>
-        <input placeholder="Filtrar por cliente" value={filtroCliente} onChange={e => setFiltroCliente(e.target.value)} />{' '}
-        <input type="date" placeholder="Filtrar por fecha" value={filtroFecha} onChange={e => setFiltroFecha(e.target.value)} />{' '}
-        <select value={filtroMetodo} onChange={e => setFiltroMetodo(e.target.value)}>
-          <option value="">Todos los métodos</option>
-          <option value="Efectivo">Efectivo</option>
-          <option value="Transferencia">Transferencia</option>
-          <option value="Tarjeta">Tarjeta</option>
-        </select>{' '}
-        <input placeholder="Filtrar por monto" value={filtroMonto} onChange={e => setFiltroMonto(e.target.value)} />
-      </div>
-      <table border={1} cellPadding={5} style={{ width: '100%', marginTop: 10 }}>
-        <thead>
-          <tr>
-            <th>Cliente</th>
-            <th>Monto</th>
-            <th>Método</th>
-            <th>Fecha</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pagosFiltrados.map(p => (
-            <tr key={p.id}>
-              <td>{p.clientes?.nombre || ''}</td>
-              <td>{p.monto}</td>
-              <td>{p.metodo}</td>
-              <td>{p.fecha ? new Date(p.fecha).toLocaleString() : ''}</td>
-              <td>
-                <button onClick={() => handleEdit(p)}>Editar</button>{' '}
-                <button onClick={() => handleDelete(p.id)}>Borrar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Box sx={{ maxWidth: 900, mx: 'auto', p: 2 }}>
+      <Typography variant="h4" mb={2} fontWeight={600}>Registro de Pagos</Typography>
+      <Box component="form" onSubmit={handleSubmit} mb={3}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
+          <FormControl sx={{ minWidth: 180 }} size="small">
+            <InputLabel>Cliente</InputLabel>
+            <Select
+              value={clienteId}
+              label="Cliente"
+              onChange={e => setClienteId(e.target.value)}
+              required
+            >
+              <MenuItem value=""><em>Seleccione cliente</em></MenuItem>
+              {clientes.map(c => (
+                <MenuItem key={c.id} value={c.id}>{c.nombre}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            type="number"
+            label="Monto"
+            value={monto}
+            onChange={e => setMonto(e.target.value)}
+            size="small"
+            required
+            sx={{ minWidth: 120 }}
+            inputProps={{ min: 0, step: 0.01 }}
+          />
+          <FormControl sx={{ minWidth: 150 }} size="small">
+            <InputLabel>Método</InputLabel>
+            <Select
+              value={metodo}
+              label="Método"
+              onChange={e => setMetodo(e.target.value)}
+            >
+              <MenuItem value="Efectivo">Efectivo</MenuItem>
+              <MenuItem value="Transferencia">Transferencia</MenuItem>
+              <MenuItem value="Tarjeta">Tarjeta</MenuItem>
+            </Select>
+          </FormControl>
+          <Button type="submit" variant="contained" color="primary">
+            {editId ? 'Guardar' : 'Agregar'}
+          </Button>
+          {editId && (
+            <Button variant="outlined" color="secondary" onClick={() => {
+              setEditId(null);
+              setClienteId('');
+              setMonto('');
+              setMetodo('Efectivo');
+            }}>
+              Cancelar
+            </Button>
+          )}
+        </Stack>
+      </Box>
+      {error && <Typography color="error" mb={2}>{error}</Typography>}
+      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={2}>
+        <TextField
+          label="Filtrar por cliente"
+          value={filtroCliente}
+          onChange={e => setFiltroCliente(e.target.value)}
+          size="small"
+        />
+        <TextField
+          type="date"
+          label="Filtrar por fecha"
+          value={filtroFecha}
+          onChange={e => setFiltroFecha(e.target.value)}
+          size="small"
+          InputLabelProps={{ shrink: true }}
+        />
+        <FormControl sx={{ minWidth: 150 }} size="small">
+          <InputLabel>Método</InputLabel>
+          <Select
+            value={filtroMetodo}
+            label="Método"
+            onChange={e => setFiltroMetodo(e.target.value)}
+          >
+            <MenuItem value="">Todos los métodos</MenuItem>
+            <MenuItem value="Efectivo">Efectivo</MenuItem>
+            <MenuItem value="Transferencia">Transferencia</MenuItem>
+            <MenuItem value="Tarjeta">Tarjeta</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          label="Filtrar por monto"
+          value={filtroMonto}
+          onChange={e => setFiltroMonto(e.target.value)}
+          size="small"
+        />
+      </Stack>
+      <TableContainer component={Paper} sx={{ mt: 2 }}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Cliente</TableCell>
+              <TableCell>Monto</TableCell>
+              <TableCell>Método</TableCell>
+              <TableCell>Fecha</TableCell>
+              <TableCell align="center">Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {pagosFiltrados.map(p => (
+              <TableRow key={p.id}>
+                <TableCell>{p.clientes?.nombre || ''}</TableCell>
+                <TableCell>{p.monto}</TableCell>
+                <TableCell>{p.metodo}</TableCell>
+                <TableCell>{p.fecha ? new Date(p.fecha).toLocaleString() : ''}</TableCell>
+                <TableCell align="center">
+                  <IconButton color="primary" onClick={() => handleEdit(p)} size="small">
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton color="error" onClick={() => handleDelete(p.id)} size="small">
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
 

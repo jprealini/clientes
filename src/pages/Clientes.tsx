@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { Box, Typography, TextField, Button, Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Stack } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function Clientes() {
   const [clientes, setClientes] = useState<any[]>([]);
@@ -80,54 +83,60 @@ function Clientes() {
   });
 
   return (
-    <div>
-      <h2>Gestión de Clientes</h2>
-      <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
-        <input placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} required />{' '}
-        <input placeholder="Teléfono" value={telefono} onChange={e => setTelefono(e.target.value)} />{' '}
-        <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />{' '}
-        <input placeholder="Dirección" value={direccion} onChange={e => setDireccion(e.target.value)} />{' '}
-        <input placeholder="Ciudad" value={ciudad} onChange={e => setCiudad(e.target.value)} />{' '}
-        <button type="submit">{editId ? 'Guardar' : 'Agregar'}</button>
-        {editId && <button type="button" onClick={() => { setEditId(null); setNombre(''); setTelefono(''); setEmail(''); setDireccion(''); setCiudad(''); }}>Cancelar</button>}
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <div style={{ marginBottom: 10 }}>
-        <input placeholder="Filtrar por nombre" value={filtroNombre} onChange={e => setFiltroNombre(e.target.value)} />{' '}
-        <input placeholder="Filtrar por email" value={filtroEmail} onChange={e => setFiltroEmail(e.target.value)} />{' '}
-        <input placeholder="Filtrar por ciudad" value={filtroCiudad} onChange={e => setFiltroCiudad(e.target.value)} />{' '}
-        <input type="date" placeholder="Filtrar por fecha" value={filtroFecha} onChange={e => setFiltroFecha(e.target.value)} />
-      </div>
-      <table border={1} cellPadding={5} style={{ width: '100%', marginTop: 10 }}>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Teléfono</th>
-            <th>Email</th>
-            <th>Dirección</th>
-            <th>Ciudad</th>
-            <th>Creado en</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clientesFiltrados.map(c => (
-            <tr key={c.id}>
-              <td>{c.nombre}</td>
-              <td>{c.telefono}</td>
-              <td>{c.email}</td>
-              <td>{c.direccion}</td>
-              <td>{c.ciudad}</td>
-              <td>{c.creado_en ? new Date(c.creado_en).toLocaleString() : ''}</td>
-              <td>
-                <button onClick={() => handleEdit(c)}>Editar</button>{' '}
-                <button onClick={() => handleDelete(c.id)}>Borrar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Box>
+      <Typography variant="h5" fontWeight={700} mb={2}>Gestión de Clientes</Typography>
+      <Paper sx={{ p: 2, mb: 2 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
+          <TextField label="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} required size="small" />
+          <TextField label="Teléfono" value={telefono} onChange={e => setTelefono(e.target.value)} size="small" />
+          <TextField label="Email" value={email} onChange={e => setEmail(e.target.value)} size="small" />
+          <TextField label="Dirección" value={direccion} onChange={e => setDireccion(e.target.value)} size="small" />
+          <TextField label="Ciudad" value={ciudad} onChange={e => setCiudad(e.target.value)} size="small" />
+          <Button type="submit" variant="contained" color="primary">{editId ? 'Guardar' : 'Agregar'}</Button>
+          {editId && <Button type="button" color="secondary" onClick={() => { setEditId(null); setNombre(''); setTelefono(''); setEmail(''); setDireccion(''); setCiudad(''); }}>Cancelar</Button>}
+        </Box>
+        {error && <Typography color="error" mt={2}>{error}</Typography>}
+      </Paper>
+      <Paper sx={{ p: 2, mb: 2 }}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={2}>
+          <TextField label="Filtrar por nombre" value={filtroNombre} onChange={e => setFiltroNombre(e.target.value)} size="small" />
+          <TextField label="Filtrar por email" value={filtroEmail} onChange={e => setFiltroEmail(e.target.value)} size="small" />
+          <TextField label="Filtrar por ciudad" value={filtroCiudad} onChange={e => setFiltroCiudad(e.target.value)} size="small" />
+          <TextField label="Filtrar por fecha" type="date" value={filtroFecha} onChange={e => setFiltroFecha(e.target.value)} size="small" InputLabelProps={{ shrink: true }} />
+        </Stack>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Teléfono</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Dirección</TableCell>
+                <TableCell>Ciudad</TableCell>
+                <TableCell>Creado en</TableCell>
+                <TableCell>Acciones</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {clientesFiltrados.map(c => (
+                <TableRow key={c.id}>
+                  <TableCell>{c.nombre}</TableCell>
+                  <TableCell>{c.telefono}</TableCell>
+                  <TableCell>{c.email}</TableCell>
+                  <TableCell>{c.direccion}</TableCell>
+                  <TableCell>{c.ciudad}</TableCell>
+                  <TableCell>{c.creado_en ? new Date(c.creado_en).toLocaleString() : ''}</TableCell>
+                  <TableCell>
+                    <IconButton color="primary" size="small" onClick={() => handleEdit(c)}><EditIcon /></IconButton>
+                    <IconButton color="error" size="small" onClick={() => handleDelete(c.id)}><DeleteIcon /></IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+    </Box>
   );
 }
 
