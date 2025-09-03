@@ -95,7 +95,7 @@ function Clientes() {
         </Box>
         {error && <Typography color="error" mt={2}>{error}</Typography>}
       </Paper>
-      <Paper sx={{ p: 2, mb: 2 }}>
+      <Paper sx={{ p: 2, mb: 2, width: '100%' }}>
         <Stack direction="column" spacing={2} mb={2}>
           <TextField label="Filtrar por nombre" value={filtroNombre} onChange={e => setFiltroNombre(e.target.value)} size="small" fullWidth />
           <TextField label="Filtrar por email" value={filtroEmail} onChange={e => setFiltroEmail(e.target.value)} size="small" fullWidth />
