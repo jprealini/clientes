@@ -107,8 +107,8 @@ function Pagos() {
   return (
     <Box sx={{ maxWidth: 900, mx: 'auto', p: 2 }}>
       <Typography variant="h4" mb={2} fontWeight={600}>Registro de Pagos</Typography>
-      <Box component="form" onSubmit={handleSubmit} mb={3}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
+      <Paper sx={{ p: 2, mb: 2 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
           <FormControl sx={{ minWidth: 180 }} size="small">
             <InputLabel>Cliente</InputLabel>
             <Select
@@ -145,21 +145,11 @@ function Pagos() {
               <MenuItem value="Tarjeta">Tarjeta</MenuItem>
             </Select>
           </FormControl>
-          <Button type="submit" variant="contained" color="primary">
-            {editId ? 'Guardar' : 'Agregar'}
-          </Button>
-          {editId && (
-            <Button variant="outlined" color="secondary" onClick={() => {
-              setEditId(null);
-              setClienteId('');
-              setMonto('');
-              setMetodo('Efectivo');
-            }}>
-              Cancelar
-            </Button>
-          )}
-        </Stack>
-      </Box>
+          <Button type="submit" variant="contained" color="primary">{editId ? 'Guardar' : 'Agregar'}</Button>
+          {editId && <Button type="button" color="secondary" onClick={() => { setEditId(null); setClienteId(''); setMonto(''); setMetodo('Efectivo'); }}>Cancelar</Button>}
+        </Box>
+        {error && <Typography color="error" mt={2}>{error}</Typography>}
+      </Paper>
       {error && <Typography color="error" mb={2}>{error}</Typography>}
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={2}>
         <TextField

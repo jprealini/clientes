@@ -16,7 +16,6 @@ function Clientes() {
   const [filtroNombre, setFiltroNombre] = useState('');
   const [filtroEmail, setFiltroEmail] = useState('');
   const [filtroCiudad, setFiltroCiudad] = useState('');
-  const [filtroFecha, setFiltroFecha] = useState('');
 
   const fetchClientes = async () => {
     const { data, error } = await supabase.from('clientes').select('*').order('creado_en', { ascending: false });
@@ -78,8 +77,7 @@ function Clientes() {
     const nombreOk = c.nombre.toLowerCase().includes(filtroNombre.toLowerCase());
     const emailOk = c.email?.toLowerCase().includes(filtroEmail.toLowerCase());
     const ciudadOk = c.ciudad?.toLowerCase().includes(filtroCiudad.toLowerCase());
-    const fechaOk = filtroFecha ? c.creado_en?.startsWith(filtroFecha) : true;
-    return nombreOk && emailOk && ciudadOk && fechaOk;
+    return nombreOk && emailOk && ciudadOk;
   });
 
   return (
@@ -102,7 +100,6 @@ function Clientes() {
           <TextField label="Filtrar por nombre" value={filtroNombre} onChange={e => setFiltroNombre(e.target.value)} size="small" />
           <TextField label="Filtrar por email" value={filtroEmail} onChange={e => setFiltroEmail(e.target.value)} size="small" />
           <TextField label="Filtrar por ciudad" value={filtroCiudad} onChange={e => setFiltroCiudad(e.target.value)} size="small" />
-          <TextField label="Filtrar por fecha" type="date" value={filtroFecha} onChange={e => setFiltroFecha(e.target.value)} size="small" InputLabelProps={{ shrink: true }} />
         </Stack>
         <TableContainer>
           <Table size="small">

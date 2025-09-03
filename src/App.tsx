@@ -114,18 +114,15 @@ function App() {
             </Paper>
           ) : (
             <div>
-              <p>Bienvenido, {user.email}</p>
-              <button onClick={handleLogout}>Cerrar sesión</button>
-              <hr />
-              <nav>
-                <ul style={{ display: 'flex', gap: '1em', listStyle: 'none', padding: 0 }}>
-                  <li><Link to="/clientes">Clientes</Link></li>
-                  <li><Link to="/agenda">Agenda de llamados</Link></li>
-                  <li><Link to="/pedidos">Pedidos</Link></li>
-                  <li><Link to="/compras">Compras</Link></li>
-                  <li><Link to="/pagos">Pagos</Link></li>
-                </ul>
-              </nav>
+              <Typography variant="body1" mb={2}>Bienvenido, {user.email}</Typography>
+              <Button onClick={handleLogout} variant="contained" color="secondary" fullWidth sx={{ mb: 2, fontWeight: 700 }}>Cerrar sesión</Button>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
+                <Button component={Link} to="/clientes" variant="contained" color="primary" fullWidth sx={{ fontWeight: 700 }}>Clientes</Button>
+                <Button component={Link} to="/agenda" variant="contained" color="primary" fullWidth sx={{ fontWeight: 700 }}>Agenda de llamados</Button>
+                <Button component={Link} to="/pedidos" variant="contained" color="primary" fullWidth sx={{ fontWeight: 700 }}>Pedidos</Button>
+                <Button component={Link} to="/compras" variant="contained" color="primary" fullWidth sx={{ fontWeight: 700 }}>Compras</Button>
+                <Button component={Link} to="/pagos" variant="contained" color="primary" fullWidth sx={{ fontWeight: 700 }}>Pagos</Button>
+              </Box>
               <Routes>
                 <Route path="/clientes" element={<Clientes />} />
                 <Route path="/agenda" element={<AgendaLlamados />} />
