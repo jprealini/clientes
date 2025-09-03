@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Box, Typography, Button, TextField, Paper, Link as MuiLink } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Clientes from './pages/Clientes';
@@ -18,6 +19,7 @@ function App() {
   const [error, setError] = useState('');
   const [isRegister, setIsRegister] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +69,7 @@ function App() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    navigate('/');
   };
 
     return (
@@ -115,13 +118,13 @@ function App() {
           ) : (
             <div>
               <Typography variant="body1" mb={2}>Bienvenido, {user.email}</Typography>
-              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, mb: 3, alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, mb: 3, alignItems: 'center', width: '100%' }}>
                 <Button component={Link} to="/clientes" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Clientes</Button>
-                <Button component={Link} to="/agenda" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 180, flex: 1 }}>Agenda de llamados</Button>
+                <Button component={Link} to="/agenda" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 180, flex: 1 }}>Llamados</Button>
                 <Button component={Link} to="/pedidos" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Pedidos</Button>
                 <Button component={Link} to="/compras" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Compras</Button>
                 <Button component={Link} to="/pagos" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Pagos</Button>
-                <Button onClick={handleLogout} variant="contained" color="secondary" sx={{ fontWeight: 700, minWidth: 140, flex: 1 }}>Cerrar sesión</Button>
+                <Button onClick={handleLogout} variant="contained" color="secondary" sx={{ fontWeight: 700, minWidth: 140, flex: 1 }}>Salir</Button>
               </Box>
               <Routes>
                 <Route path="/clientes" element={<Clientes />} />

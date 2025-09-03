@@ -107,7 +107,7 @@ function Compras() {
   });
 
   return (
-  <Box sx={{ maxWidth: 1280, mx: 'auto', p: 2 }}>
+  <Box sx={{ width: '100%', p: 2 }}>
       <Typography variant="h4" mb={2} fontWeight={600}>Registro de Compras</Typography>
       <Paper sx={{ p: 2, mb: 2 }}>
         <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
