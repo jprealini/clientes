@@ -113,93 +113,112 @@ function AgendaLlamados() {
   return (
   <Box sx={{ width: '100%', p: 2 }}>
       <Typography variant="h4" mb={2} fontWeight={600}>Agenda de Llamados</Typography>
-      <Paper sx={{ p: 2, mb: 2 }}>
-        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
-          <FormControl sx={{ minWidth: 180 }} size="small">
-            <InputLabel>Cliente</InputLabel>
-            <Select
-              value={clienteId}
-              label="Cliente"
-              onChange={e => setClienteId(e.target.value)}
+      
+      {/* Form for adding/editing */}
+      <Box sx={{ maxWidth: '1280px', mx: 'auto', mb: 3 }}>
+        <Paper sx={{ p: 2 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
+            <FormControl sx={{ minWidth: 180 }} size="small">
+              <InputLabel>Cliente</InputLabel>
+              <Select
+                value={clienteId}
+                label="Cliente"
+                onChange={e => setClienteId(e.target.value)}
+                required
+              >
+                <MenuItem value=""><em>Seleccione cliente</em></MenuItem>
+                {clientes.map(c => (
+                  <MenuItem key={c.id} value={c.id}>{c.nombre}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              type="datetime-local"
+              label="Fecha"
+              value={fecha}
+              onChange={e => setFecha(e.target.value)}
+              size="small"
               required
-            >
-              <MenuItem value=""><em>Seleccione cliente</em></MenuItem>
-              {clientes.map(c => (
-                <MenuItem key={c.id} value={c.id}>{c.nombre}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            type="datetime-local"
-            label="Fecha"
-            value={fecha}
-            onChange={e => setFecha(e.target.value)}
-            size="small"
-            required
-            InputLabelProps={{ shrink: true }}
-            sx={{ minWidth: 180 }}
-          />
-          <TextField
-            label="Motivo"
-            value={motivo}
-            onChange={e => setMotivo(e.target.value)}
-            size="small"
-            sx={{ minWidth: 180 }}
-          />
-          <FormControlLabel
-            control={<Checkbox checked={realizado} onChange={e => setRealizado(e.target.checked)} />}
-            label="Realizado"
-          />
-          <Button type="submit" variant="contained" color="primary">{editId ? 'Guardar' : 'Agregar'}</Button>
-          {editId && <Button type="button" color="secondary" onClick={() => { setEditId(null); setClienteId(''); setFecha(''); setMotivo(''); setRealizado(false); }}>Cancelar</Button>}
-        </Box>
-        {error && <Typography color="error" mt={2}>{error}</Typography>}
-      </Paper>
+              InputLabelProps={{ shrink: true }}
+              sx={{ minWidth: 180 }}
+            />
+            <TextField
+              label="Motivo"
+              value={motivo}
+              onChange={e => setMotivo(e.target.value)}
+              size="small"
+              sx={{ minWidth: 180 }}
+            />
+            <FormControlLabel
+              control={<Checkbox checked={realizado} onChange={e => setRealizado(e.target.checked)} />}
+              label="Realizado"
+            />
+            <Button type="submit" variant="contained" color="primary">{editId ? 'Guardar' : 'Agregar'}</Button>
+            {editId && <Button type="button" color="secondary" onClick={() => { setEditId(null); setClienteId(''); setFecha(''); setMotivo(''); setRealizado(false); }}>Cancelar</Button>}
+          </Box>
+          {error && <Typography color="error" mt={2}>{error}</Typography>}
+        </Paper>
+      </Box>
       {error && <Typography color="error" mb={2}>{error}</Typography>}
-      <Stack direction="column" spacing={2} mb={2}>
-        <TextField label="Filtrar por cliente" value={filtroCliente} onChange={e => setFiltroCliente(e.target.value)} size="small" fullWidth />
-        <TextField type="date" label="Filtrar por fecha" value={filtroFecha} onChange={e => setFiltroFecha(e.target.value)} size="small" InputLabelProps={{ shrink: true }} fullWidth />
-        <TextField label="Filtrar por motivo" value={filtroMotivo} onChange={e => setFiltroMotivo(e.target.value)} size="small" fullWidth />
-        <FormControl sx={{ minWidth: 120 }} size="small" fullWidth>
-          <InputLabel>Realizado</InputLabel>
-          <Select value={filtroRealizado} label="Realizado" onChange={e => setFiltroRealizado(e.target.value)}>
-            <MenuItem value="">Todos</MenuItem>
-            <MenuItem value="sí">Realizados</MenuItem>
-            <MenuItem value="no">No realizados</MenuItem>
-          </Select>
-        </FormControl>
-      </Stack>
-      <TableContainer component={Paper} sx={{ mt: 2 }}>
-        <Table size="medium">
-          <TableHead>
-            <TableRow>
-              <TableCell>Cliente</TableCell>
-              <TableCell>Fecha</TableCell>
-              <TableCell>Motivo</TableCell>
-              <TableCell>Realizado</TableCell>
-              <TableCell align="center">Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {llamadosFiltrados.map(l => (
-              <TableRow key={l.id}>
-                <TableCell>{l.clientes?.nombre || ''}</TableCell>
-                <TableCell>{l.fecha ? new Date(l.fecha).toLocaleString() : ''}</TableCell>
-                <TableCell>{l.motivo}</TableCell>
-                <TableCell>{l.realizado ? 'Sí' : 'No'}</TableCell>
-                <TableCell align="center">
-                  <IconButton color="primary" onClick={() => handleEdit(l)} size="small">
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton color="error" onClick={() => handleDelete(l.id)} size="small">
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+
+      {/* Filters and Table */}
+      <Box sx={{ display: 'flex', gap: 3 }}>
+        {/* Filters */}
+        <Box sx={{ width: '250px', flexShrink: 0 }}>
+          <Paper sx={{ p: 2 }}>
+            <Stack direction="column" spacing={2}>
+              <TextField label="Filtrar por cliente" value={filtroCliente} onChange={e => setFiltroCliente(e.target.value)} size="small" fullWidth />
+              <TextField type="date" label="Filtrar por fecha" value={filtroFecha} onChange={e => setFiltroFecha(e.target.value)} size="small" InputLabelProps={{ shrink: true }} fullWidth />
+              <TextField label="Filtrar por motivo" value={filtroMotivo} onChange={e => setFiltroMotivo(e.target.value)} size="small" fullWidth />
+              <FormControl size="small" fullWidth>
+                <InputLabel>Realizado</InputLabel>
+                <Select value={filtroRealizado} label="Realizado" onChange={e => setFiltroRealizado(e.target.value)}>
+                  <MenuItem value="">Todos</MenuItem>
+                  <MenuItem value="sí">Realizados</MenuItem>
+                  <MenuItem value="no">No realizados</MenuItem>
+                </Select>
+              </FormControl>
+            </Stack>
+          </Paper>
+        </Box>
+        
+        {/* Table */}
+        <Box sx={{ flex: 1 }}>
+          <Paper sx={{ p: 2, width: '100%' }}>
+            <TableContainer>
+              <Table size="medium">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Cliente</TableCell>
+                    <TableCell>Fecha</TableCell>
+                    <TableCell>Motivo</TableCell>
+                    <TableCell>Realizado</TableCell>
+                    <TableCell align="center">Acciones</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {llamadosFiltrados.map(l => (
+                    <TableRow key={l.id}>
+                      <TableCell>{l.clientes?.nombre || ''}</TableCell>
+                      <TableCell>{l.fecha ? new Date(l.fecha).toLocaleString() : ''}</TableCell>
+                      <TableCell>{l.motivo}</TableCell>
+                      <TableCell>{l.realizado ? 'Sí' : 'No'}</TableCell>
+                      <TableCell align="center">
+                        <IconButton color="primary" onClick={() => handleEdit(l)} size="small">
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton color="error" onClick={() => handleDelete(l.id)} size="small">
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Box>
+      </Box>
     </Box>
   );
 }

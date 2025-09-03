@@ -107,93 +107,112 @@ function Pedidos() {
   return (
   <Box sx={{ width: '100%', p: 2 }}>
       <Typography variant="h4" mb={2} fontWeight={600}>Registro de Pedidos</Typography>
-      <Paper sx={{ p: 2, mb: 2 }}>
-        <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
-          <FormControl sx={{ minWidth: 180 }} size="small">
-            <InputLabel>Cliente</InputLabel>
-            <Select
-              value={clienteId}
-              label="Cliente"
-              onChange={e => setClienteId(e.target.value)}
+      
+      {/* Form for adding/editing */}
+      <Box sx={{ maxWidth: '1280px', mx: 'auto', mb: 3 }}>
+        <Paper sx={{ p: 2 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
+            <FormControl sx={{ minWidth: 180 }} size="small">
+              <InputLabel>Cliente</InputLabel>
+              <Select
+                value={clienteId}
+                label="Cliente"
+                onChange={e => setClienteId(e.target.value)}
+                required
+              >
+                <MenuItem value=""><em>Seleccione cliente</em></MenuItem>
+                {clientes.map(c => (
+                  <MenuItem key={c.id} value={c.id}>{c.nombre}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label="Descripción"
+              value={descripcion}
+              onChange={e => setDescripcion(e.target.value)}
+              size="small"
               required
-            >
-              <MenuItem value=""><em>Seleccione cliente</em></MenuItem>
-              {clientes.map(c => (
-                <MenuItem key={c.id} value={c.id}>{c.nombre}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField
-            label="Descripción"
-            value={descripcion}
-            onChange={e => setDescripcion(e.target.value)}
-            size="small"
-            required
-            sx={{ minWidth: 180 }}
-          />
-          <FormControl sx={{ minWidth: 150 }} size="small">
-            <InputLabel>Estado</InputLabel>
-            <Select
-              value={estado}
-              label="Estado"
-              onChange={e => setEstado(e.target.value)}
-            >
-              <MenuItem value="Pendiente">Pendiente</MenuItem>
-              <MenuItem value="En proceso">En proceso</MenuItem>
-              <MenuItem value="Completado">Completado</MenuItem>
-            </Select>
-          </FormControl>
-          <Button type="submit" variant="contained" color="primary">{editId ? 'Guardar' : 'Agregar'}</Button>
-          {editId && <Button type="button" color="secondary" onClick={() => { setEditId(null); setClienteId(''); setDescripcion(''); setEstado('Pendiente'); }}>Cancelar</Button>}
-        </Box>
-        {error && <Typography color="error" mt={2}>{error}</Typography>}
-      </Paper>
+              sx={{ minWidth: 180 }}
+            />
+            <FormControl sx={{ minWidth: 150 }} size="small">
+              <InputLabel>Estado</InputLabel>
+              <Select
+                value={estado}
+                label="Estado"
+                onChange={e => setEstado(e.target.value)}
+              >
+                <MenuItem value="Pendiente">Pendiente</MenuItem>
+                <MenuItem value="En proceso">En proceso</MenuItem>
+                <MenuItem value="Completado">Completado</MenuItem>
+              </Select>
+            </FormControl>
+            <Button type="submit" variant="contained" color="primary">{editId ? 'Guardar' : 'Agregar'}</Button>
+            {editId && <Button type="button" color="secondary" onClick={() => { setEditId(null); setClienteId(''); setDescripcion(''); setEstado('Pendiente'); }}>Cancelar</Button>}
+          </Box>
+          {error && <Typography color="error" mt={2}>{error}</Typography>}
+        </Paper>
+      </Box>
       {error && <Typography color="error" mb={2}>{error}</Typography>}
-      <Stack direction="column" spacing={2} mb={2}>
-        <TextField label="Filtrar por cliente" value={filtroCliente} onChange={e => setFiltroCliente(e.target.value)} size="small" fullWidth />
-        <TextField type="date" label="Filtrar por fecha" value={filtroFecha} onChange={e => setFiltroFecha(e.target.value)} size="small" InputLabelProps={{ shrink: true }} fullWidth />
-        <FormControl sx={{ minWidth: 150 }} size="small" fullWidth>
-          <InputLabel>Estado</InputLabel>
-          <Select value={filtroEstado} label="Estado" onChange={e => setFiltroEstado(e.target.value)}>
-            <MenuItem value="">Todos los estados</MenuItem>
-            <MenuItem value="Pendiente">Pendiente</MenuItem>
-            <MenuItem value="En proceso">En proceso</MenuItem>
-            <MenuItem value="Completado">Completado</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField label="Filtrar por descripción" value={filtroDescripcion} onChange={e => setFiltroDescripcion(e.target.value)} size="small" fullWidth />
-      </Stack>
-      <TableContainer component={Paper} sx={{ mt: 2 }}>
-        <Table size="medium">
-          <TableHead>
-            <TableRow>
-              <TableCell>Cliente</TableCell>
-              <TableCell>Descripción</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell>Fecha</TableCell>
-              <TableCell align="center">Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {pedidosFiltrados.map(p => (
-              <TableRow key={p.id}>
-                <TableCell>{p.clientes?.nombre || ''}</TableCell>
-                <TableCell>{p.descripcion}</TableCell>
-                <TableCell>{p.estado}</TableCell>
-                <TableCell>{p.fecha ? new Date(p.fecha).toLocaleString() : ''}</TableCell>
-                <TableCell align="center">
-                  <IconButton color="primary" onClick={() => handleEdit(p)} size="small">
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton color="error" onClick={() => handleDelete(p.id)} size="small">
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+
+      {/* Filters and Table */}
+      <Box sx={{ display: 'flex', gap: 3 }}>
+        {/* Filters */}
+        <Box sx={{ width: '250px', flexShrink: 0 }}>
+          <Paper sx={{ p: 2 }}>
+            <Stack direction="column" spacing={2}>
+              <TextField label="Filtrar por cliente" value={filtroCliente} onChange={e => setFiltroCliente(e.target.value)} size="small" fullWidth />
+              <TextField type="date" label="Filtrar por fecha" value={filtroFecha} onChange={e => setFiltroFecha(e.target.value)} size="small" InputLabelProps={{ shrink: true }} fullWidth />
+              <FormControl size="small" fullWidth>
+                <InputLabel>Estado</InputLabel>
+                <Select value={filtroEstado} label="Estado" onChange={e => setFiltroEstado(e.target.value)}>
+                  <MenuItem value="">Todos los estados</MenuItem>
+                  <MenuItem value="Pendiente">Pendiente</MenuItem>
+                  <MenuItem value="En proceso">En proceso</MenuItem>
+                  <MenuItem value="Completado">Completado</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField label="Filtrar por descripción" value={filtroDescripcion} onChange={e => setFiltroDescripcion(e.target.value)} size="small" fullWidth />
+            </Stack>
+          </Paper>
+        </Box>
+        
+        {/* Table */}
+        <Box sx={{ flex: 1 }}>
+          <Paper sx={{ p: 2, width: '100%' }}>
+            <TableContainer>
+              <Table size="medium">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Cliente</TableCell>
+                    <TableCell>Descripción</TableCell>
+                    <TableCell>Estado</TableCell>
+                    <TableCell>Fecha</TableCell>
+                    <TableCell align="center">Acciones</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {pedidosFiltrados.map(p => (
+                    <TableRow key={p.id}>
+                      <TableCell>{p.clientes?.nombre || ''}</TableCell>
+                      <TableCell>{p.descripcion}</TableCell>
+                      <TableCell>{p.estado}</TableCell>
+                      <TableCell>{p.fecha ? new Date(p.fecha).toLocaleString() : ''}</TableCell>
+                      <TableCell align="center">
+                        <IconButton color="primary" onClick={() => handleEdit(p)} size="small">
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton color="error" onClick={() => handleDelete(p.id)} size="small">
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </Box>
+      </Box>
     </Box>
   );
 }
