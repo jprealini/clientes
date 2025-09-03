@@ -46,31 +46,13 @@ function MainApp({ user, setUser }: { user: User | null, setUser: (u: User | nul
   );
 }
 
-function App() {
+function LoginPage({ setUser }: { setUser: (u: User | null) => void }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState('');
   const [isRegister, setIsRegister] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // Verificar si hay una sesión activa al cargar la página
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    // Suscribirse a cambios en el estado de autenticación
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    // Limpiar la suscripción cuando el componente se desmonte
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,48 +102,73 @@ function App() {
   };
 
   return (
+    <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
+      <Typography variant="h6" align="center" mb={2}>
+        {isRegister ? 'Registro' : 'Iniciar sesión'}
+      </Typography>
+      <Box component="form" onSubmit={isRegister ? handleRegister : handleLogin} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <TextField
+          label="Email"
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          fullWidth
+        />
+        <TextField
+          label="Contraseña"
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+          fullWidth
+        />
+        <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading} sx={{ py: 1.2, fontWeight: 700 }}>
+          {loading ? 'Procesando...' : isRegister ? 'Registrarse' : 'Ingresar'}
+        </Button>
+      </Box>
+      <Box textAlign="center" mt={2}>
+        <MuiLink component="button" type="button" underline="hover" color="primary" onClick={() => { setIsRegister(!isRegister); setError(''); }}>
+          {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
+        </MuiLink>
+      </Box>
+      {error && (
+        <Typography color={error.includes('exitoso') ? 'success.main' : 'error'} align="center" mt={2}>
+          {error}
+        </Typography>
+      )}
+    </Paper>
+  );
+}
+
+function App() {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // Verificar si hay una sesión activa al cargar la página
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Suscribirse a cambios en el estado de autenticación
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Limpiar la suscripción cuando el componente se desmonte
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  return (
     <Router>
       <Container maxWidth="sm" sx={{ pt: 2 }}>
         <Typography variant="h4" align="center" fontWeight={700} mb={3}>
           Administración de Clientes
         </Typography>
         {!user ? (
-          <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
-            <Typography variant="h6" align="center" mb={2}>
-              {isRegister ? 'Registro' : 'Iniciar sesión'}
-            </Typography>
-            <Box component="form" onSubmit={isRegister ? handleRegister : handleLogin} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <TextField
-                label="Email"
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                fullWidth
-              />
-              <TextField
-                label="Contraseña"
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                fullWidth
-              />
-              <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading} sx={{ py: 1.2, fontWeight: 700 }}>
-                {loading ? 'Procesando...' : isRegister ? 'Registrarse' : 'Ingresar'}
-              </Button>
-            </Box>
-            <Box textAlign="center" mt={2}>
-              <MuiLink component="button" type="button" underline="hover" color="primary" onClick={() => { setIsRegister(!isRegister); setError(''); }}>
-                {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
-              </MuiLink>
-            </Box>
-            {error && (
-              <Typography color={error.includes('exitoso') ? 'success.main' : 'error'} align="center" mt={2}>
-                {error}
-              </Typography>
-            )}
-          </Paper>
+          <LoginPage setUser={setUser} />
         ) : (
           <MainApp user={user} setUser={setUser} />
         )}
