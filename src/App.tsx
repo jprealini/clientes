@@ -7,6 +7,7 @@ import AgendaLlamados from './pages/AgendaLlamados';
 import Pedidos from './pages/Pedidos';
 import Compras from './pages/Compras';
 import Pagos from './pages/Pagos';
+import Productos from './pages/Productos';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from './supabaseClient';
 
@@ -25,6 +26,7 @@ function MainApp({ user, setUser }: { user: User | null, setUser: (u: User | nul
       <Typography variant="body1" mb={2}>Bienvenido, {user?.email}</Typography>
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, mb: 3, alignItems: 'center', width: '100%' }}>
         <Button component={Link} to="/clientes" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Clientes</Button>
+        <Button component={Link} to="/productos" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Productos</Button>
         <Button component={Link} to="/agenda" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 180, flex: 1 }}>Llamados</Button>
         <Button component={Link} to="/pedidos" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Pedidos</Button>
         <Button component={Link} to="/compras" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Compras</Button>
@@ -33,6 +35,7 @@ function MainApp({ user, setUser }: { user: User | null, setUser: (u: User | nul
       </Box>
       <Routes>
         <Route path="/clientes" element={<Clientes />} />
+        <Route path="/productos" element={<Productos />} />
         <Route path="/agenda" element={<AgendaLlamados />} />
         <Route path="/pedidos" element={<Pedidos />} />
         <Route path="/compras" element={<Compras />} />
@@ -44,6 +47,7 @@ function MainApp({ user, setUser }: { user: User | null, setUser: (u: User | nul
 }
 
 function App() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState<User | null>(null);
@@ -92,6 +96,8 @@ function App() {
           email: data.user.email,
         });
       }
+      // Redirigir a la página de clientes después del login exitoso
+      navigate('/clientes');
     }
   };
 
