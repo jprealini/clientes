@@ -115,13 +115,13 @@ function App() {
           ) : (
             <div>
               <Typography variant="body1" mb={2}>Bienvenido, {user.email}</Typography>
-              <Button onClick={handleLogout} variant="contained" color="secondary" fullWidth sx={{ mb: 2, fontWeight: 700 }}>Cerrar sesión</Button>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 3 }}>
-                <Button component={Link} to="/clientes" variant="contained" color="primary" fullWidth sx={{ fontWeight: 700 }}>Clientes</Button>
-                <Button component={Link} to="/agenda" variant="contained" color="primary" fullWidth sx={{ fontWeight: 700 }}>Agenda de llamados</Button>
-                <Button component={Link} to="/pedidos" variant="contained" color="primary" fullWidth sx={{ fontWeight: 700 }}>Pedidos</Button>
-                <Button component={Link} to="/compras" variant="contained" color="primary" fullWidth sx={{ fontWeight: 700 }}>Compras</Button>
-                <Button component={Link} to="/pagos" variant="contained" color="primary" fullWidth sx={{ fontWeight: 700 }}>Pagos</Button>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 2, mb: 3, alignItems: 'center' }}>
+                <Button component={Link} to="/clientes" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Clientes</Button>
+                <Button component={Link} to="/agenda" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 180, flex: 1 }}>Agenda de llamados</Button>
+                <Button component={Link} to="/pedidos" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Pedidos</Button>
+                <Button component={Link} to="/compras" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Compras</Button>
+                <Button component={Link} to="/pagos" variant="contained" color="primary" sx={{ fontWeight: 700, minWidth: 120, flex: 1 }}>Pagos</Button>
+                <Button onClick={handleLogout} variant="contained" color="secondary" sx={{ fontWeight: 700, minWidth: 140, flex: 1 }}>Cerrar sesión</Button>
               </Box>
               <Routes>
                 <Route path="/clientes" element={<Clientes />} />

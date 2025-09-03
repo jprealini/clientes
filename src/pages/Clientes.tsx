@@ -81,7 +81,7 @@ function Clientes() {
   });
 
   return (
-    <Box>
+  <Box sx={{ maxWidth: 1280, mx: 'auto', p: 2 }}>
       <Typography variant="h5" fontWeight={700} mb={2}>Gestión de Clientes</Typography>
       <Paper sx={{ p: 2, mb: 2 }}>
         <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
@@ -96,10 +96,10 @@ function Clientes() {
         {error && <Typography color="error" mt={2}>{error}</Typography>}
       </Paper>
       <Paper sx={{ p: 2, mb: 2 }}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={2}>
-          <TextField label="Filtrar por nombre" value={filtroNombre} onChange={e => setFiltroNombre(e.target.value)} size="small" />
-          <TextField label="Filtrar por email" value={filtroEmail} onChange={e => setFiltroEmail(e.target.value)} size="small" />
-          <TextField label="Filtrar por ciudad" value={filtroCiudad} onChange={e => setFiltroCiudad(e.target.value)} size="small" />
+        <Stack direction="column" spacing={2} mb={2}>
+          <TextField label="Filtrar por nombre" value={filtroNombre} onChange={e => setFiltroNombre(e.target.value)} size="small" fullWidth />
+          <TextField label="Filtrar por email" value={filtroEmail} onChange={e => setFiltroEmail(e.target.value)} size="small" fullWidth />
+          <TextField label="Filtrar por ciudad" value={filtroCiudad} onChange={e => setFiltroCiudad(e.target.value)} size="small" fullWidth />
         </Stack>
         <TableContainer>
           <Table size="small">

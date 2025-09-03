@@ -105,7 +105,7 @@ function Pagos() {
   });
 
   return (
-    <Box sx={{ maxWidth: 900, mx: 'auto', p: 2 }}>
+  <Box sx={{ maxWidth: 1280, mx: 'auto', p: 2 }}>
       <Typography variant="h4" mb={2} fontWeight={600}>Registro de Pagos</Typography>
       <Paper sx={{ p: 2, mb: 2 }}>
         <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
@@ -151,40 +151,19 @@ function Pagos() {
         {error && <Typography color="error" mt={2}>{error}</Typography>}
       </Paper>
       {error && <Typography color="error" mb={2}>{error}</Typography>}
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mb={2}>
-        <TextField
-          label="Filtrar por cliente"
-          value={filtroCliente}
-          onChange={e => setFiltroCliente(e.target.value)}
-          size="small"
-        />
-        <TextField
-          type="date"
-          label="Filtrar por fecha"
-          value={filtroFecha}
-          onChange={e => setFiltroFecha(e.target.value)}
-          size="small"
-          InputLabelProps={{ shrink: true }}
-        />
-        <FormControl sx={{ minWidth: 150 }} size="small">
+      <Stack direction="column" spacing={2} mb={2}>
+        <TextField label="Filtrar por cliente" value={filtroCliente} onChange={e => setFiltroCliente(e.target.value)} size="small" fullWidth />
+        <TextField type="date" label="Filtrar por fecha" value={filtroFecha} onChange={e => setFiltroFecha(e.target.value)} size="small" InputLabelProps={{ shrink: true }} fullWidth />
+        <FormControl sx={{ minWidth: 150 }} size="small" fullWidth>
           <InputLabel>Método</InputLabel>
-          <Select
-            value={filtroMetodo}
-            label="Método"
-            onChange={e => setFiltroMetodo(e.target.value)}
-          >
+          <Select value={filtroMetodo} label="Método" onChange={e => setFiltroMetodo(e.target.value)}>
             <MenuItem value="">Todos los métodos</MenuItem>
             <MenuItem value="Efectivo">Efectivo</MenuItem>
             <MenuItem value="Transferencia">Transferencia</MenuItem>
             <MenuItem value="Tarjeta">Tarjeta</MenuItem>
           </Select>
         </FormControl>
-        <TextField
-          label="Filtrar por monto"
-          value={filtroMonto}
-          onChange={e => setFiltroMonto(e.target.value)}
-          size="small"
-        />
+        <TextField label="Filtrar por monto" value={filtroMonto} onChange={e => setFiltroMonto(e.target.value)} size="small" fullWidth />
       </Stack>
       <TableContainer component={Paper} sx={{ mt: 2 }}>
         <Table size="small">
