@@ -121,7 +121,7 @@ function App() {
 
   return (
     <Router>
-      <Container maxWidth="sm" sx={{ py: 4 }}>
+      <Container maxWidth="sm" sx={{ pt: 2 }}>
         <Typography variant="h4" align="center" fontWeight={700} mb={3}>
           Administración de Clientes
         </Typography>
